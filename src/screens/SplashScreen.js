@@ -3,6 +3,11 @@ import {View, Image} from 'react-native';
 import {SIZES} from '../constants';
 
 export default class SplashScreen extends React.Component {
+  componentDidMount() {
+    setTimeout(() => {
+      this.props.navigation.navigate('LoginScreen');
+    }, 2000);
+  }
   render() {
     return (
       <View style={styles.container}>
