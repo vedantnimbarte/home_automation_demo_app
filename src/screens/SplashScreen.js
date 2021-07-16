@@ -1,12 +1,19 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Image} from 'react-native';
 
 export default class SplashScreen extends React.Component {
   render() {
     return (
       <View>
-        <Text>SplashScreen</Text>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
     );
   }
 }
+
+const styles = {
+  logo: {
+    height: 20,
+    width: 20,
+  },
+};
