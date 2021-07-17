@@ -9,4 +9,5 @@ export const COLORS = {
   Primary: '#8F00FF',
   White: '#FFFFFF',
   Gray: 'gray',
+  DarkGray: '#3B3B3B',
 };
