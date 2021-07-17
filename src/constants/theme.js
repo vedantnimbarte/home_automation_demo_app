@@ -7,4 +7,6 @@ export const SIZES = {
 
 export const COLORS = {
   Primary: '#8F00FF',
+  White: '#FFFFFF',
+  Gray: 'gray',
 };
