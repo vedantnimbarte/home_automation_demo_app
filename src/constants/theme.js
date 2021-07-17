@@ -1,5 +1,4 @@
 import {Dimensions} from 'react-native';
-import Logo from '../assets/logo.png';
 
 export const SIZES = {
   Height: Dimensions.get('window').height,
