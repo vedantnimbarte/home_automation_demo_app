@@ -1,4 +1,5 @@
 import {Dimensions} from 'react-native';
+import Logo from '../assets/logo.png';
 
 export const SIZES = {
   Height: Dimensions.get('window').height,
@@ -10,4 +11,8 @@ export const COLORS = {
   White: '#FFFFFF',
   Gray: 'gray',
   DarkGray: '#3B3B3B',
+};
+
+export const FONTS = {
+  Primary: 'times new roman',
 };
