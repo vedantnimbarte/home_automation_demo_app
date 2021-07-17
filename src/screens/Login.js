@@ -15,7 +15,7 @@ export default class Login extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView style={{flex: 1}}>
-        <ScrollView contentContainerStyle={{flex: 1}}>
+        <ScrollView contentContainerStyle={{flex: 1}} bounces={false}>
           <View style={styles.MainContainer}>
             <View style={styles.LoginContainer}>
               <View style={styles.LogoContainer}>
