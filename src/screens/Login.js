@@ -13,7 +13,7 @@ import {SIZES, COLORS, FONTS} from '../constants/theme';
 
 export const Login = ({navigation}) => {
   const _loginHandler = () => {
-    console.log(this.props);
+    navigation.navigate('HomeNavigator');
   };
   return (
     <KeyboardAvoidingView style={{flex: 1}}>
@@ -44,7 +44,7 @@ export const Login = ({navigation}) => {
             />
             <TouchableOpacity
               style={styles.LoginButton}
-              onPress={() => _loginHandler}>
+              onPress={_loginHandler}>
               <Text style={styles.LoginText}>Login</Text>
             </TouchableOpacity>
           </View>
