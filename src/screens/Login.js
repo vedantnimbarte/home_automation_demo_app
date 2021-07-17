@@ -11,45 +11,48 @@ import {
 } from 'react-native';
 import {SIZES, COLORS, FONTS} from '../constants/theme';
 
-export default class Login extends React.Component {
-  render() {
-    return (
-      <KeyboardAvoidingView style={{flex: 1}}>
-        <ScrollView contentContainerStyle={{flex: 1}} bounces={false}>
-          <View style={styles.MainContainer}>
-            <View style={styles.LoginContainer}>
-              <View style={styles.LogoContainer}>
-                <Image
-                  source={require('../assets/logo.png')}
-                  style={styles.Logo}
-                />
-              </View>
-              <View style={styles.HeaderTextContainer}>
-                <Text style={styles.HeaderText}>Make Living easy</Text>
-                <Text style={styles.HeaderMessage}>
-                  Something revolutionary for your home
-                </Text>
-              </View>
-              <TextInput
-                placeholder="Email"
-                style={styles.InputField}
-                placeholderTextColor={COLORS.Primary}
+export const Login = ({navigation}) => {
+  const _loginHandler = () => {
+    console.log(this.props);
+  };
+  return (
+    <KeyboardAvoidingView style={{flex: 1}}>
+      <ScrollView contentContainerStyle={{flex: 1}} bounces={false}>
+        <View style={styles.MainContainer}>
+          <View style={styles.LoginContainer}>
+            <View style={styles.LogoContainer}>
+              <Image
+                source={require('../assets/logo.png')}
+                style={styles.Logo}
               />
-              <TextInput
-                placeholder="Password"
-                style={styles.InputField}
-                placeholderTextColor={COLORS.Primary}
-              />
-              <TouchableOpacity style={styles.LoginButton}>
-                <Text style={styles.LoginText}>Login</Text>
-              </TouchableOpacity>
             </View>
+            <View style={styles.HeaderTextContainer}>
+              <Text style={styles.HeaderText}>Make Living easy</Text>
+              <Text style={styles.HeaderMessage}>
+                Something revolutionary for your home
+              </Text>
+            </View>
+            <TextInput
+              placeholder="Email"
+              style={styles.InputField}
+              placeholderTextColor={COLORS.Primary}
+            />
+            <TextInput
+              placeholder="Password"
+              style={styles.InputField}
+              placeholderTextColor={COLORS.Primary}
+            />
+            <TouchableOpacity
+              style={styles.LoginButton}
+              onPress={() => _loginHandler}>
+              <Text style={styles.LoginText}>Login</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  }
-}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
 
 const styles = StyleSheet.create({
   MainContainer: {
