@@ -1,12 +1,19 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+} from 'react-native';
 import {SIZES, COLORS, FONTS} from '../constants/theme';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export const Home = () => {
+export const Home = ({navigation}) => {
   const MenuItems = [
     {
       id: 1,
@@ -14,6 +21,7 @@ export const Home = () => {
       description:
         'Use this option to create and configure a user to the database',
       icon: <FontAwesome name="user-o" size={24} color={COLORS.White} />,
+      screen_name: 'CreateUserScreen',
     },
     {
       id: 2,
@@ -21,12 +29,14 @@ export const Home = () => {
       description:
         'Scan to an existing or select add a product from the Inventory',
       icon: <MaterialIcons name="devices" size={24} color={COLORS.White} />,
+      screen_name: 'AddProductScreen',
     },
     {
       id: 3,
       title: 'Configure Home',
       description: 'Follow the meu to setup our home to the system',
       icon: <FontAwesome name="home" size={24} color={COLORS.White} />,
+      screen_name: 'ConfigureHomeScreen',
     },
     {
       id: 4,
@@ -39,26 +49,35 @@ export const Home = () => {
           color={COLORS.White}
         />
       ),
+      screen_name: 'AddAppliancesScreen',
     },
     {
       id: 5,
       title: 'Settings',
       description: 'Quick settings',
       icon: <Feather name="settings" size={24} color={COLORS.White} />,
+      screen_name: 'SettingsScreen',
     },
   ];
 
   const _renderMenu = ({item}) => {
     return (
-      <View style={styles.MenuItem}>
+      <TouchableOpacity
+        style={styles.MenuItem}
+        onPress={() => _navigationHandler(item.screen_name)}>
         <View style={styles.IconContainer}>
           <Text>{item.icon}</Text>
         </View>
         <Text style={styles.MenuTitle}>{item.title}</Text>
         <Text style={styles.MenuDescription}>{item.description}</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
+
+  const _navigationHandler = screen_name => {
+    navigation.navigate(screen_name);
+  };
+
   return (
     <View style={styles.MainContainer}>
       <View style={styles.HeaderContainer}>
