@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image} from 'react-native';
-import {SIZES} from '../constants';
+import {SIZES} from '../constants/theme';
 
 export default class SplashScreen extends React.Component {
   componentDidMount() {
