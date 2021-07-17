@@ -2,10 +2,10 @@ import React from 'react';
 import {View, Image} from 'react-native';
 import {SIZES} from '../constants/theme';
 
-export const SplashScreen = () => {
+export const SplashScreen = ({navigation}) => {
   React.useEffect(() => {
     setTimeout(() => {
-      this.props.navigation.navigate('LoginScreen');
+      navigation.navigate('LoginScreen');
     }, 2000);
   });
   return (
