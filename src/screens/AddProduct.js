@@ -9,6 +9,9 @@ export const Add_Product = ({navigation}) => {
   };
   return (
     <View style={styles.MainContainer}>
+      <View style={styles.HeaderContainer}>
+        <Text style={styles.HeaderText}>Add Product</Text>
+      </View>
       <View style={styles.InnerContainer}>
         <TouchableOpacity style={styles.CameraContainer}>
           <FontAwesome name="camera" size={50} color={COLORS.Gray} />
@@ -58,5 +61,15 @@ const styles = StyleSheet.create({
     color: COLORS.White,
     fontFamily: FONTS.Primary,
     fontSize: 15,
+  },
+  HeaderContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+  },
+  HeaderText: {
+    fontFamily: FONTS.Primary,
+    color: COLORS.Primary,
+    fontSize: 20,
   },
 });
