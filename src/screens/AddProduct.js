@@ -11,6 +11,9 @@ export const Add_Product = ({navigation}) => {
     <View style={styles.MainContainer}>
       <View style={styles.HeaderContainer}>
         <Text style={styles.HeaderText}>Add Product</Text>
+        <Text style={styles.HeaderDescription}>
+          Scan to an existing or select add a product from the Inventory
+        </Text>
       </View>
       <View style={styles.InnerContainer}>
         <TouchableOpacity style={styles.CameraContainer}>
@@ -47,7 +50,7 @@ const styles = StyleSheet.create({
   InnerContainer: {
     padding: 10,
     alignItems: 'center',
-    top: SIZES.Height * 0.2,
+    top: SIZES.Height * 0.15,
   },
   AddDeviceButton: {
     backgroundColor: COLORS.Primary,
@@ -71,5 +74,10 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Primary,
     color: COLORS.Primary,
     fontSize: 20,
+  },
+  HeaderDescription: {
+    color: COLORS.DarkGray,
+    fontFamily: FONTS.Primary,
+    margin: 10,
   },
 });
