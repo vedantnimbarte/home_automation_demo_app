@@ -5,6 +5,7 @@ import {Add_Product} from './AddProduct';
 import {Product} from './Product';
 import {ConfigureHome} from './ConfigureHome';
 import {AddAppliances} from './AddAppliances';
+import {AddApplianceToRoom} from './AddApplianceToRoom';
 
 export {
   SplashScreen,
@@ -14,4 +15,5 @@ export {
   Product,
   ConfigureHome,
   AddAppliances,
+  AddApplianceToRoom,
 };
