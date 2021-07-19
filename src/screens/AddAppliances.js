@@ -3,8 +3,7 @@ import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export const AddAppliances = () => {
-  const [room_name, setRoomName] = useState();
+export const AddAppliances = ({navigation}) => {
   const [rooms, setRooms] = useState();
 
   useEffect(() => {
@@ -19,9 +18,14 @@ export const AddAppliances = () => {
     {id: 5, name: 'Dressing Room', deviceCount: 2},
   ];
 
+  const _navigationHandler = room_name => {
+    navigation.navigate('AddApplianceToRoomScreen', {room: room_name});
+  };
   const _renderRooms = ({item}) => {
     return (
-      <TouchableOpacity style={styles.RoomContainer}>
+      <TouchableOpacity
+        style={styles.RoomContainer}
+        onPress={() => _navigationHandler(item.name)}>
         <View style={{flexDirection: 'row'}}>
           <Text style={styles.RoomText}>{item.name}</Text>
           <Text style={styles.DevicesIndicatorText}>
@@ -99,7 +103,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.White,
     marginLeft: 10,
     borderRadius: SIZES.Height * 1,
-    borderWidth: 1,
     alignSelf: 'center',
   },
 });
