@@ -6,6 +6,7 @@ import {
   Product,
   ConfigureHome,
   AddAppliances,
+  AddApplianceToRoom,
 } from '../screens';
 import {COLORS, FONTS} from '../constants/theme';
 
@@ -37,6 +38,10 @@ export const HomeNavigation = () => {
       <Stack.Screen name="ProductScreen" component={Product} />
       <Stack.Screen name="ConfigureHomeScreen" component={ConfigureHome} />
       <Stack.Screen name="AddAppliancesScreen" component={AddAppliances} />
+      <Stack.Screen
+        name="AddApplianceToRoomScreen"
+        component={AddApplianceToRoom}
+      />
     </Stack.Navigator>
   );
 };
