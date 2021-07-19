@@ -3,7 +3,10 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 
-export const Add_Product = () => {
+export const Add_Product = ({navigation}) => {
+  const _navigationHandler = screen_name => {
+    navigation.navigate(screen_name);
+  };
   return (
     <View style={styles.MainContainer}>
       <View style={styles.InnerContainer}>
@@ -11,7 +14,9 @@ export const Add_Product = () => {
           <FontAwesome name="camera" size={50} color={COLORS.Gray} />
         </TouchableOpacity>
         <Text style={styles.SeperatorText}>OR</Text>
-        <TouchableOpacity style={styles.AddDeviceButton}>
+        <TouchableOpacity
+          style={styles.AddDeviceButton}
+          onPress={() => _navigationHandler('ProductScreen')}>
           <Text style={styles.AddDeviceText}>Add Device Manually</Text>
         </TouchableOpacity>
       </View>
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
   },
   AddDeviceText: {
     color: COLORS.White,
-    fontFamily: COLORS.White,
+    fontFamily: FONTS.Primary,
     fontSize: 15,
   },
 });
