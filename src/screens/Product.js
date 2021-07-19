@@ -47,6 +47,9 @@ export const Product = ({navigation}) => {
 
   return (
     <View style={styles.Container}>
+      <View style={styles.HeaderContainer}>
+        <Text style={styles.HeaderText}>Select Products</Text>
+      </View>
       <View style={styles.MainContainer}>
         <FlatList
           numColumns={2}
@@ -196,5 +199,15 @@ const styles = StyleSheet.create({
   BtnText: {
     color: COLORS.White,
     fontFamily: FONTS.Primary,
+  },
+  HeaderContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+  },
+  HeaderText: {
+    fontFamily: FONTS.Primary,
+    color: COLORS.Primary,
+    fontSize: 20,
   },
 });
