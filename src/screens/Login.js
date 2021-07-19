@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,36 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {SIZES, COLORS, FONTS} from '../constants/theme';
+import {CONFIG} from '../constants/config.js';
 
 export const Login = ({navigation}) => {
-  const _loginHandler = () => {
-    navigation.navigate('HomeNavigator');
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  const _loginHandler = async () => {
+    const url = `http://${CONFIG.IP}:${CONFIG.PORT}/auth/login`;
+    console.log(url);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email, password}),
+    });
+    const result = await response.json();
+    result.success
+      ? _navigationHandler('HomeNavigator')
+      : Alert.alert(
+          result.message,
+          'Check your email address and password again.',
+        );
+  };
+
+  const _navigationHandler = screen_name => {
+    navigation.navigate(screen_name);
   };
   return (
     <KeyboardAvoidingView style={{flex: 1}}>
@@ -36,11 +60,18 @@ export const Login = ({navigation}) => {
               placeholder="Email"
               style={styles.InputField}
               placeholderTextColor={COLORS.Primary}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={text => setEmail(text)}
             />
             <TextInput
               placeholder="Password"
               style={styles.InputField}
+              secureTextEntry={true}
               placeholderTextColor={COLORS.Primary}
+              value={password}
+              onChangeText={text => setPassword(text)}
             />
             <TouchableOpacity
               style={styles.LoginButton}
@@ -98,6 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 5,
     padding: 10,
+    color: COLORS.Primary,
   },
   LoginButton: {
     backgroundColor: COLORS.Primary,
