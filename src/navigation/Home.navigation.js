@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Home, Add_Product, Product} from '../screens';
+import {Home, Add_Product, Product, ConfigureHome} from '../screens';
 import {COLORS, FONTS} from '../constants/theme';
 
 const Stack = createStackNavigator();
@@ -29,6 +29,7 @@ export const HomeNavigation = () => {
       />
       <Stack.Screen name="AddProductScreen" component={Add_Product} />
       <Stack.Screen name="ProductScreen" component={Product} />
+      <Stack.Screen name="ConfigureHomeScreen" component={ConfigureHome} />
     </Stack.Navigator>
   );
 };
