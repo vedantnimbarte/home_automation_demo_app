@@ -169,7 +169,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   InnerModalContainer: {
-    top: 100,
+    marginTop: SIZES.Height * 0.17,
+    marginLeft: SIZES.Width * 0.1,
     backgroundColor: COLORS.White,
     width: SIZES.Width * 0.8,
     alignItems: 'center',
