@@ -1,9 +1,26 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
+import {CONFIG} from '../constants/config.js';
 
 export const Add_Product = ({navigation}) => {
+  const [inventory, setInventory] = useState([]);
+  useEffect(() => {
+    _getAllDevices();
+  }, []);
+
+  const _getAllDevices = async () => {
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getAllDevices`,
+    );
+    const result = await response.json();
+    // console.log(result);
+    if (result.success === 1) {
+      setInventory(result);
+    }
+  };
+
   const _navigationHandler = screen_name => {
     navigation.navigate(screen_name);
   };

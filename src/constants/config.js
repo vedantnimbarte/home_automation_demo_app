@@ -1,4 +1,0 @@
-export const CONFIG = {
-  IP: 'YOUR LOCAL IP ADDRESS OF API',
-  PORT: 'YOUR API PORT',
-};
