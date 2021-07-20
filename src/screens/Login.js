@@ -13,10 +13,17 @@ import {
 } from 'react-native';
 import {SIZES, COLORS, FONTS} from '../constants/theme';
 import {CONFIG} from '../constants/config.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Login = ({navigation}) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const _storeDataToStorage = async (data) => {
+    try {
+      
+    }
+  }
 
   const _loginHandler = async () => {
     const url = `http://${CONFIG.IP}:${CONFIG.PORT}/auth/login`;
@@ -34,12 +41,15 @@ export const Login = ({navigation}) => {
       ),
     );
     const result = await response.json();
-    result.success
-      ? _navigationHandler('HomeNavigator')
-      : Alert.alert(
-          result.message,
-          'Check your email address and password again.',
-        );
+    if(result.success) {
+      await AsyncStorage.setItem('user', JSON.stringify(result))
+      _navigationHandler('HomeNavigator')
+    }else {
+      Alert.alert(
+         result.message,
+         'Check your email address and password again.',
+       );
+    }
   };
 
   const _navigationHandler = screen_name => {
