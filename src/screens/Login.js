@@ -19,12 +19,6 @@ export const Login = ({navigation}) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const _storeDataToStorage = async (data) => {
-    try {
-      
-    }
-  }
-
   const _loginHandler = async () => {
     const url = `http://${CONFIG.IP}:${CONFIG.PORT}/auth/login`;
     console.log(url);
