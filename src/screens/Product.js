@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,30 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS, SIZES, FONTS} from '../constants/theme';
+import {CONFIG} from '../constants/config.js';
 
-export const Product = ({navigation}) => {
+export const Product = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [inventory, setInventory] = useState();
+  const [isLoading, setLoading] = useState(true);
 
-  const Products = [
-    {id: 1, name: 'Device 1', type: 'R12/32A', switches: 12, amp: '32A'},
-    {id: 2, name: 'Device 2', type: 'R6/32A', switches: 6, amp: '32A'},
-    {id: 3, name: 'Device 3', type: 'R1/32A', switches: 1, amp: '32A'},
-  ];
+  useEffect(() => {
+    _getAllDevices();
+  }, []);
+
+  const _getAllDevices = async () => {
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getAllDevices`,
+    );
+    const result = await response.json();
+    if (result.success === 1) {
+      setInventory(result.results);
+      setLoading(false);
+    }
+  };
 
   const _navigationHandler = screen_name => {
     navigation.navigate(screen_name);
@@ -26,7 +39,7 @@ export const Product = ({navigation}) => {
   const renderProducts = ({item}) => (
     <View style={styles.ProductContainer}>
       <View style={styles.ProductInfoContainer}>
-        <Text style={styles.ProductName}>{item.name}</Text>
+        <Text style={styles.ProductName}>{item.device}</Text>
         <View style={styles.ProductTypeContainer}>
           <Text style={styles.ProductTypeText}>{item.type}</Text>
         </View>
@@ -51,17 +64,25 @@ export const Product = ({navigation}) => {
         <Text style={styles.HeaderText}>Select Products</Text>
       </View>
       <View style={styles.MainContainer}>
-        <FlatList
-          numColumns={2}
-          data={Products}
-          keyExtractor={item => item.id}
-          renderItem={renderProducts}
-        />
-        <TouchableOpacity
-          style={styles.AddDevicesBtn}
-          onPress={() => setModalVisible(true)}>
-          <Text style={styles.AddDevicesText}>Add Devices</Text>
-        </TouchableOpacity>
+        {isLoading ? (
+          <ActivityIndicator color={COLORS.Primary} />
+        ) : !inventory || inventory === 'undefined' ? (
+          <Text>No devices are in the inventory</Text>
+        ) : (
+          <View>
+            <FlatList
+              numColumns={2}
+              data={inventory}
+              keyExtractor={item => item.id}
+              renderItem={renderProducts}
+            />
+            <TouchableOpacity
+              style={styles.AddDevicesBtn}
+              onPress={() => setModalVisible(true)}>
+              <Text style={styles.AddDevicesText}>Add Devices</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <Modal
         animationType="fade"
