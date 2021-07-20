@@ -1,13 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Image} from 'react-native';
 import {SIZES} from '../constants/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const SplashScreen = ({navigation}) => {
-  React.useEffect(() => {
-    setTimeout(() => {
-      navigation.navigate('LoginScreen');
-    }, 2000);
+  useEffect(() => {
+    _validateUser();
   });
+
+  const _validateUser = async () => {
+    const userData = await AsyncStorage.getItem('user');
+    if (userData) {
+      navigation.navigate('HomeNavigator');
+    } else {
+      navigation.navigate('LoginScreen');
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
