@@ -16,7 +16,9 @@ export const Product = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [inventory, setInventory] = useState();
   const [isLoading, setLoading] = useState(true);
+  const [devicesList, setdevicesList] = useState();
 
+  const devices = [];
   useEffect(() => {
     _getAllDevices();
   }, []);
@@ -32,8 +34,13 @@ export const Product = ({navigation, route}) => {
     }
   };
 
+  const _selectDevice = device_id => {
+    devices.push(device_id);
+    console.log(devices);
+  };
+
   const _navigationHandler = screen_name => {
-    navigation.navigate(screen_name);
+    // navigation.navigate(screen_name);
   };
 
   const renderProducts = ({item}) => (
@@ -52,7 +59,9 @@ export const Product = ({navigation, route}) => {
           <Text>{item.amp}</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.SelectProductBtn}>
+      <TouchableOpacity
+        style={styles.SelectProductBtn}
+        onPress={() => _selectDevice(item.id)}>
         <Text style={styles.SelectText}>Select</Text>
       </TouchableOpacity>
     </View>
