@@ -1,22 +1,37 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import {CONFIG} from '../constants/config.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AddAppliances = ({navigation}) => {
   const [rooms, setRooms] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setRooms(Rooms);
+    _getRooms();
   }, []);
 
-  const Rooms = [
-    {id: 1, name: 'Basement', deviceCount: 1},
-    {id: 2, name: 'bathroom', deviceCount: 4},
-    {id: 3, name: 'Bedroom', deviceCount: 0},
-    {id: 4, name: 'Dining Room', deviceCount: 0},
-    {id: 5, name: 'Dressing Room', deviceCount: 2},
-  ];
+  const _getRooms = async () => {
+    const user = await AsyncStorage.getItem('user');
+
+    const user_id = JSON.parse(user).results[0].user_id;
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getRoomsAssignedToUser?user_id=${user_id}`,
+    );
+    const result = await response.json();
+    if (result.success === 1) {
+      setRooms(result.results);
+    }
+    setLoading(false);
+  };
 
   const _navigationHandler = room_name => {
     navigation.navigate('AddApplianceToRoomScreen', {room: room_name});
@@ -25,13 +40,8 @@ export const AddAppliances = ({navigation}) => {
     return (
       <TouchableOpacity
         style={styles.RoomContainer}
-        onPress={() => _navigationHandler(item.name)}>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={styles.RoomText}>{item.name}</Text>
-          <Text style={styles.DevicesIndicatorText}>
-            {item.deviceCount} devices
-          </Text>
-        </View>
+        onPress={() => _navigationHandler(item.room)}>
+        <Text style={styles.RoomText}>{item.room}</Text>
         <Ionicons name="arrow-redo" size={24} color={COLORS.White} />
       </TouchableOpacity>
     );
@@ -44,11 +54,17 @@ export const AddAppliances = ({navigation}) => {
         Add multiple appliances you want to manage
       </Text>
       <View style={styles.RoomsContainer}>
-        <FlatList
-          data={rooms}
-          keyExtractor={item => item.id}
-          renderItem={_renderRooms}
-        />
+        {loading ? (
+          <ActivityIndicator size="small" color={COLORS.Primary} />
+        ) : !rooms ? (
+          <Text>No rooms created.</Text>
+        ) : (
+          <FlatList
+            data={rooms}
+            keyExtractor={item => item.id}
+            renderItem={_renderRooms}
+          />
+        )}
       </View>
     </View>
   );
