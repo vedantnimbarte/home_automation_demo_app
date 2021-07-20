@@ -45,7 +45,7 @@ export const Product = ({navigation, route}) => {
         </View>
         <View style={styles.ConfigContainer}>
           <Text>Switches</Text>
-          <Text>{item.switches}</Text>
+          <Text>{item.no_of_relays}</Text>
         </View>
         <View style={styles.ConfigContainer}>
           <Text>Amp</Text>
