@@ -22,7 +22,7 @@ export const Add_Product = ({navigation}) => {
   };
 
   const _navigationHandler = screen_name => {
-    navigation.navigate(screen_name);
+    navigation.navigate(screen_name, {inventory: inventory});
   };
   return (
     <View style={styles.MainContainer}>
