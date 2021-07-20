@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -10,7 +11,8 @@ import {
 } from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 import {Picker} from '@react-native-picker/picker';
-import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CONFIG} from '../constants/config.js';
 
 export const AddApplianceToRoom = ({route, navigation}) => {
   const [appliances, setAppliances] = useState();
@@ -20,17 +22,8 @@ export const AddApplianceToRoom = ({route, navigation}) => {
   const [switchStatus, SetSwitchStatus] = useState(false);
   const [dimmerStatus, setDimmerStatus] = useState(false);
 
-  useEffect(() => {
-    setAppliances(Appliances);
-  }, []);
-
   const toggleSwitch = () => SetSwitchStatus(previousState => !previousState);
   const toggleDimmer = () => setDimmerStatus(previousState => !previousState);
-
-  const Appliances = [
-    {id: 1, name: 'Fan', relay: 'R6', switch: true, dimmer: true},
-    {id: 2, name: 'TV', relay: 'R12', switch: true, dimmer: false},
-  ];
 
   const _renderDevices = ({item}) => {
     return (
@@ -42,7 +35,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
             Switch: {item.switch ? 'On' : 'Off'}
           </Text>
           <Text style={styles.DeviceConfig}>
-            Switch: {item.dimmer ? 'On' : 'Off'}
+            Dimmer: {item.dimmer ? 'On' : 'Off'}
           </Text>
         </View>
       </View>
@@ -58,7 +51,14 @@ export const AddApplianceToRoom = ({route, navigation}) => {
       <View style={styles.MainContainer}>
         <Text style={styles.HeaderText}>Room: {route.params.room}</Text>
         {!appliances ? (
-          <Text style={styles.HeaderText}>No appliances detected</Text>
+          <Text
+            style={{
+              fontFamily: FONTS.Primary,
+              color: COLORS.DarkGray,
+              margin: 10,
+            }}>
+            No appliances detected
+          </Text>
         ) : (
           <FlatList
             numColumns={2}
@@ -96,20 +96,59 @@ export const AddApplianceToRoom = ({route, navigation}) => {
                   }
                   style={styles.PickerItems}>
                   <Picker.Item label="Fan" value="fan" />
-                  <Picker.Item label="TV" value="tv" />
+                  <Picker.Item label="Toaster" value="toaster" />
+                  <Picker.Item label="Light Bulb" value="light bulb" />
+                  <Picker.Item label="Television" value="television" />
+                  <Picker.Item label="Coffee Maker" value="coffee maker" />
+                  <Picker.Item label="Rice Cooker" value="rice cooker" />
+                  <Picker.Item label="Lamp" value="lamp" />
+                  <Picker.Item
+                    label="Electric Kettle"
+                    value="electric kettle"
+                  />
+                  <Picker.Item
+                    label="Air conditioner"
+                    value="air conditioner"
+                  />
+                  <Picker.Item label="Oven" value="oven" />
+                  <Picker.Item label="Dishwasher" value="dishwasher" />
+                  <Picker.Item label="Speaker" value="speaker" />
+                  <Picker.Item label="Clothes dryer" value="clothes dryer" />
+                  <Picker.Item
+                    label="Washing machine"
+                    value="washing machine"
+                  />
+                  <Picker.Item label="Refrigerator" value="refrigerator" />
                 </Picker>
               </View>
             </View>
             <View style={styles.InnerPickerContainer}>
-              <Text style={styles.Label}>Appliances</Text>
+              <Text style={styles.Label}>Device Type</Text>
               <View style={styles.AppliancePicker}>
                 <Picker
                   selectedValue={relay}
                   onValueChange={(itemValue, itemIndex) => setRelay(itemValue)}
                   style={styles.PickerItems}>
-                  <Picker.Item label="R12" value="R12" />
-                  <Picker.Item label="R6" value="R6" />
-                  <Picker.Item label="R1" value="R1" />
+                  <Picker.Item label="R6/10A" value="R6/10A" />
+                  <Picker.Item label="R1/sec" value="R1/sec" />
+                  <Picker.Item label="R1/32A" value="R1/32A" />
+                  <Picker.Item label="R2/10A" value="R2/10A" />
+                </Picker>
+              </View>
+            </View>
+            <View style={styles.InnerPickerContainer}>
+              <Text style={styles.Label}>Relays</Text>
+              <View style={styles.AppliancePicker}>
+                <Picker
+                  selectedValue={relay}
+                  onValueChange={(itemValue, itemIndex) => setRelay(itemValue)}
+                  style={styles.PickerItems}>
+                  <Picker.Item label="r1" value="r1" />
+                  <Picker.Item label="r2" value="r2" />
+                  <Picker.Item label="r3" value="r3" />
+                  <Picker.Item label="r4" value="r4" />
+                  <Picker.Item label="r5" value="r5" />
+                  <Picker.Item label="r6" value="r6" />
                 </Picker>
               </View>
             </View>
@@ -204,12 +243,12 @@ const styles = StyleSheet.create({
     // position: 'absolute',
   },
   InnerModalContainer: {
-    marginTop: SIZES.Height * 0.17,
+    marginTop: SIZES.Height * 0.1,
     marginLeft: SIZES.Width * 0.1,
     backgroundColor: COLORS.White,
     width: SIZES.Width * 0.8,
     alignItems: 'center',
-    height: SIZES.Height * 0.65,
+    height: SIZES.Height * 0.8,
     borderRadius: 5,
     shadowColor: '#000',
     paddingTop: 30,
