@@ -7,32 +7,65 @@ import {
   Modal,
   TouchableOpacity,
   TextInput,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {CONFIG} from '../constants/config.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ConfigureHome = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [room_name, setRoomName] = useState();
   const [rooms, setRooms] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setRooms(Rooms);
+    _getRooms();
   }, []);
 
-  const Rooms = [
-    {id: 1, name: 'Basement'},
-    {id: 2, name: 'bathroom'},
-    {id: 3, name: 'Bedroom'},
-    {id: 4, name: 'Dining Room'},
-    {id: 5, name: 'Dressing Room'},
-  ];
+  const _getRooms = async () => {
+    const user = await AsyncStorage.getItem('user');
+
+    const user_id = JSON.parse(user).results[0].user_id;
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getRoomsAssignedToUser?user_id=${user_id}`,
+    );
+    const result = await response.json();
+    if (result.success === 1) {
+      setRooms(result.results);
+    }
+    setLoading(false);
+  };
+
+  const _createRoom = async () => {
+    const user = await AsyncStorage.getItem('user');
+
+    const user_id = JSON.parse(user).results[0].user_id;
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/assignRoomToUser?user_id=${user_id}&room_name=${room_name}`,
+    );
+    const result = await response.json();
+    if (result.success === 1) {
+      ToastAndroid.show(`${result.message}`, ToastAndroid.LONG);
+    } else {
+      ToastAndroid.show(
+        'Unable to add room. Please try again',
+        ToastAndroid.LONG,
+      );
+    }
+    setRoomName();
+    _getRooms();
+    setLoading(false);
+    setModalVisible(!modalVisible);
+  };
 
   const _renderRoms = ({item}) => {
     return (
       <View style={styles.RoomContainer}>
         <View>
-          <Text style={styles.RoomName}>{item.name}</Text>
+          <Text style={styles.RoomName}>{item.room}</Text>
         </View>
         <View style={styles.ActionsContainer}>
           <FontAwesome
@@ -61,11 +94,19 @@ export const ConfigureHome = () => {
       </View>
       <View style={styles.RoomsContainer}>
         <Text style={styles.HeadingText}>List of Rooms</Text>
-        <FlatList
-          data={rooms}
-          keyExtractor={item => item.id}
-          renderItem={_renderRoms}
-        />
+        {loading ? (
+          <ActivityIndicator size="small" color={COLORS.Primary} />
+        ) : !rooms ? (
+          <Text style={{alignSelf: 'center', color: COLORS.Primary}}>
+            No rooms created
+          </Text>
+        ) : (
+          <FlatList
+            data={rooms}
+            keyExtractor={rooms.id}
+            renderItem={_renderRoms}
+          />
+        )}
       </View>
       <TouchableOpacity
         style={styles.AddRoomBtn}
@@ -83,7 +124,6 @@ export const ConfigureHome = () => {
             Enter the room name you want
           </Text>
           <TextInput
-            value={room_name}
             onChangeText={text => setRoomName(text)}
             style={styles.RoomInput}
           />
@@ -95,7 +135,7 @@ export const ConfigureHome = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.SubmitBtn}
-              onPress={() => setModalVisible(!modalVisible)}>
+              onPress={() => _createRoom()}>
               <Text style={styles.BtnText}>Add Room</Text>
             </TouchableOpacity>
           </View>
