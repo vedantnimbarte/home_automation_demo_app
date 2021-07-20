@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import {SIZES, COLORS, FONTS} from '../constants/theme';
 import {CONFIG} from '../constants/config.js';
@@ -26,7 +27,12 @@ export const Login = ({navigation}) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({email, password}),
-    });
+    }).catch(error =>
+      ToastAndroid.show(
+        'unable to get data. Please check your device is connected to internet.',
+        ToastAndroid.LONG,
+      ),
+    );
     const result = await response.json();
     result.success
       ? _navigationHandler('HomeNavigator')
