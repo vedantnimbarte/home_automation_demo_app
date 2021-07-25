@@ -16,7 +16,9 @@ export const Add_Product = ({navigation}) => {
         </Text>
       </View>
       <View style={styles.InnerContainer}>
-        <TouchableOpacity style={styles.CameraContainer}>
+        <TouchableOpacity
+          style={styles.CameraContainer}
+          onPress={() => _navigationHandler('QRCodeScannerScreen')}>
           <FontAwesome name="camera" size={50} color={COLORS.Gray} />
         </TouchableOpacity>
         <Text style={styles.SeperatorText}>OR</Text>
