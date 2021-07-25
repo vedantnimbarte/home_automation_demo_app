@@ -8,6 +8,7 @@ import {
   FlatList,
   Modal,
   Switch,
+  ToastAndroid,
 } from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 import {Picker} from '@react-native-picker/picker';
@@ -15,12 +16,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CONFIG} from '../constants/config.js';
 
 export const AddApplianceToRoom = ({route, navigation}) => {
-  const [appliances, setAppliances] = useState();
+  const [rooms, setRooms] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [appliance_name, setApplianceName] = useState();
   const [relay, setRelay] = useState();
   const [switchStatus, SetSwitchStatus] = useState(false);
   const [dimmerStatus, setDimmerStatus] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [deviceType, setDeviceType] = useState();
 
   const toggleSwitch = () => SetSwitchStatus(previousState => !previousState);
   const toggleDimmer = () => setDimmerStatus(previousState => !previousState);
@@ -42,6 +45,29 @@ export const AddApplianceToRoom = ({route, navigation}) => {
     );
   };
 
+  const _assignDevice = async () => {
+    const user = await AsyncStorage.getItem('user');
+
+    const user_id = JSON.parse(user).results[0].user_id;
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/assignAppliance?user_id=${user_id}&appliance=${appliance_name}&switch_status=${switchStatus}&dimmer_status=${dimmerStatus}&relay=${relay}&room_name=${route.params.room}&device_type=${deviceType}`,
+    );
+    const result = await response.json();
+    if (result.success === 1) {
+      ToastAndroid.show(`${result.message}`, ToastAndroid.LONG);
+    } else {
+      ToastAndroid.show(
+        'Unable to add room. Please try again',
+        ToastAndroid.LONG,
+      );
+    }
+    setApplianceName();
+    SetSwitchStatus();
+    setDimmerStatus();
+    setRelay();
+    setLoading(false);
+    setModalVisible(!modalVisible);
+  };
   const _navigationHandler = screen_name => {
     navigation.navigate(screen_name);
   };
@@ -50,7 +76,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
     <View style={{flex: 1}}>
       <View style={styles.MainContainer}>
         <Text style={styles.HeaderText}>Room: {route.params.room}</Text>
-        {!appliances ? (
+        {!rooms ? (
           <Text
             style={{
               fontFamily: FONTS.Primary,
@@ -62,7 +88,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
         ) : (
           <FlatList
             numColumns={2}
-            data={appliances}
+            data={rooms}
             keyExtractor={item => item.id}
             renderItem={_renderDevices}
             style={styles.AppliancesContainer}
@@ -95,6 +121,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
                     setApplianceName(itemValue)
                   }
                   style={styles.PickerItems}>
+                  <Picker.Item label="Select appliance" value="" />
                   <Picker.Item label="Fan" value="fan" />
                   <Picker.Item label="Toaster" value="toaster" />
                   <Picker.Item label="Light Bulb" value="light bulb" />
@@ -126,9 +153,12 @@ export const AddApplianceToRoom = ({route, navigation}) => {
               <Text style={styles.Label}>Device Type</Text>
               <View style={styles.AppliancePicker}>
                 <Picker
-                  selectedValue={relay}
-                  onValueChange={(itemValue, itemIndex) => setRelay(itemValue)}
+                  selectedValue={deviceType}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setDeviceType(itemValue)
+                  }
                   style={styles.PickerItems}>
+                  <Picker.Item label="Select device type" value="" />
                   <Picker.Item label="R6/10A" value="R6/10A" />
                   <Picker.Item label="R1/sec" value="R1/sec" />
                   <Picker.Item label="R1/32A" value="R1/32A" />
@@ -143,6 +173,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
                   selectedValue={relay}
                   onValueChange={(itemValue, itemIndex) => setRelay(itemValue)}
                   style={styles.PickerItems}>
+                  <Picker.Item label="Select relay" value="" />
                   <Picker.Item label="r1" value="r1" />
                   <Picker.Item label="r2" value="r2" />
                   <Picker.Item label="r3" value="r3" />
@@ -183,7 +214,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.SubmitBtn}
-              onPress={() => _navigationHandler('HomeScreen')}>
+              onPress={() => _assignDevice()}>
               <Text style={styles.BtnText}>Submit</Text>
             </TouchableOpacity>
           </View>

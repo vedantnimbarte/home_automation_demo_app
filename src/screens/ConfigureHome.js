@@ -22,39 +22,25 @@ export const ConfigureHome = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    _setRooms();
     _getRooms();
   }, []);
 
-  const _getRooms = async () => {
-    const user = await AsyncStorage.getItem('user');
+  const Rooms = [{name: 'Bedroom'}, {name: 'Living Room'}, {name: 'Kitchen'}];
 
-    const user_id = JSON.parse(user).results[0].user_id;
-    const response = await fetch(
-      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getRoomsAssignedToUser?user_id=${user_id}`,
-    );
-    const result = await response.json();
-    if (result.success === 1) {
-      setRooms(result.results);
-    }
+  const _setRooms = async () => {
+    await AsyncStorage.setItem('rooms', JSON.stringify(Rooms));
+  };
+  const _getRooms = async () => {
+    const _rooms = await AsyncStorage.getItem('rooms');
+    setRooms(JSON.parse(_rooms));
     setLoading(false);
   };
 
   const _createRoom = async () => {
-    const user = await AsyncStorage.getItem('user');
-
-    const user_id = JSON.parse(user).results[0].user_id;
-    const response = await fetch(
-      `http://${CONFIG.IP}:${CONFIG.PORT}/config/assignRoomToUser?user_id=${user_id}&room_name=${room_name}`,
-    );
-    const result = await response.json();
-    if (result.success === 1) {
-      ToastAndroid.show(`${result.message}`, ToastAndroid.LONG);
-    } else {
-      ToastAndroid.show(
-        'Unable to add room. Please try again',
-        ToastAndroid.LONG,
-      );
-    }
+    Rooms.push({name: room_name});
+    await AsyncStorage.setItem('rooms', JSON.stringify(Rooms));
+    ToastAndroid.show('Room created successfully', ToastAndroid.LONG);
     setRoomName();
     _getRooms();
     setLoading(false);
@@ -65,7 +51,7 @@ export const ConfigureHome = () => {
     return (
       <View style={styles.RoomContainer}>
         <View>
-          <Text style={styles.RoomName}>{item.room}</Text>
+          <Text style={styles.RoomName}>{item.name}</Text>
         </View>
         <View style={styles.ActionsContainer}>
           <FontAwesome

@@ -20,16 +20,10 @@ export const AddAppliances = ({navigation}) => {
   }, []);
 
   const _getRooms = async () => {
-    const user = await AsyncStorage.getItem('user');
+    const _rooms = await AsyncStorage.getItem('rooms');
+    setRooms(JSON.parse(_rooms));
+    setLoading(false);
 
-    const user_id = JSON.parse(user).results[0].user_id;
-    const response = await fetch(
-      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getRoomsAssignedToUser?user_id=${user_id}`,
-    );
-    const result = await response.json();
-    if (result.success === 1) {
-      setRooms(result.results);
-    }
     setLoading(false);
   };
 
@@ -40,8 +34,8 @@ export const AddAppliances = ({navigation}) => {
     return (
       <TouchableOpacity
         style={styles.RoomContainer}
-        onPress={() => _navigationHandler(item.room)}>
-        <Text style={styles.RoomText}>{item.room}</Text>
+        onPress={() => _navigationHandler(item.name)}>
+        <Text style={styles.RoomText}>{item.name}</Text>
         <Ionicons name="arrow-redo" size={24} color={COLORS.White} />
       </TouchableOpacity>
     );
@@ -59,11 +53,7 @@ export const AddAppliances = ({navigation}) => {
         ) : !rooms ? (
           <Text>No rooms created.</Text>
         ) : (
-          <FlatList
-            data={rooms}
-            keyExtractor={item => item.id}
-            renderItem={_renderRooms}
-          />
+          <FlatList data={rooms} renderItem={_renderRooms} />
         )}
       </View>
     </View>
