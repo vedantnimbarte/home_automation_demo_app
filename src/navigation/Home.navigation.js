@@ -7,6 +7,7 @@ import {
   ConfigureHome,
   AddAppliances,
   AddApplianceToRoom,
+  QRCode,
 } from '../screens';
 import {COLORS, FONTS} from '../constants/theme';
 
@@ -42,6 +43,7 @@ export const HomeNavigation = () => {
         name="AddApplianceToRoomScreen"
         component={AddApplianceToRoom}
       />
+      <Stack.Screen name="QRCodeScannerScreen" component={QRCode} />
     </Stack.Navigator>
   );
 };
