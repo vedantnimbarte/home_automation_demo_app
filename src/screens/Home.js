@@ -5,6 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Home = ({navigation}) => {
   const MenuItems = [
@@ -51,6 +52,13 @@ export const Home = ({navigation}) => {
       icon: <Feather name="settings" size={24} color={COLORS.White} />,
       screen_name: 'SettingsScreen',
     },
+    {
+      id: 6,
+      title: 'Logout',
+      description: 'Logout from current session',
+      icon: <MaterialIcons name="logout" size={24} color={COLORS.White} />,
+      screen_name: 'LoginScreen',
+    },
   ];
 
   const _renderMenu = ({item}) => {
@@ -67,7 +75,11 @@ export const Home = ({navigation}) => {
     );
   };
 
-  const _navigationHandler = screen_name => {
+  const _navigationHandler = async screen_name => {
+    if (screen_name === 'LoginScreen') {
+      await AsyncStorage.removeItem('user');
+      navigation.navigate(screen_name);
+    }
     navigation.navigate(screen_name);
   };
 
@@ -75,9 +87,6 @@ export const Home = ({navigation}) => {
     <View style={styles.MainContainer}>
       <View style={styles.HeaderContainer}>
         <Text style={styles.HeaderText}>Let's Start</Text>
-        <Text style={styles.HeaderDescription}>
-          lorem ipsum dolor amet consectetuer
-        </Text>
       </View>
       <View style={styles.gridMenuContainer}>
         <FlatList
