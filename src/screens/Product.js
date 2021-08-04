@@ -19,10 +19,14 @@ export const Product = ({navigation, route}) => {
   const [isLoading, setLoading] = useState(true);
   const [selectedDevice, setSelectedDevice] = useState();
 
-  const devices = [];
   useEffect(() => {
     _getAllDevices();
+    _refreshSelectedDevices();
   }, []);
+
+  const _refreshSelectedDevices = async () => {
+    await AsyncStorage.removeItem('device_serial');
+  };
 
   const _getAllDevices = async () => {
     const response = await fetch(
@@ -39,7 +43,8 @@ export const Product = ({navigation, route}) => {
     setSelectedDevice(serial_no);
   };
 
-  const _unSelectDevice = () => {
+  const _unSelectDevice = async () => {
+    await AsyncStorage.removeItem('device_serial');
     setSelectedDevice();
   };
 
