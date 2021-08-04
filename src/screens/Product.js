@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {COLORS, SIZES, FONTS} from '../constants/theme';
 import {CONFIG} from '../constants/config.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Product = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -38,6 +39,15 @@ export const Product = ({navigation, route}) => {
     setSelectedDevice(serial_no);
   };
 
+  const _unSelectDevice = () => {
+    setSelectedDevice();
+  };
+
+  const _AssignDeviceToUser = async () => {
+    await AsyncStorage.setItem('device_serial', selectedDevice);
+    navigation.navigate('HomeScreen');
+  };
+
   const renderProducts = ({item}) => (
     <View style={styles.ProductContainer}>
       <View style={styles.ProductInfoContainer}>
@@ -56,7 +66,11 @@ export const Product = ({navigation, route}) => {
       </View>
       <TouchableOpacity
         style={styles.SelectProductBtn}
-        onPress={() => _selectDevice(item.serial_no)}>
+        onPress={() =>
+          selectedDevice === item.serial_no
+            ? _unSelectDevice()
+            : _selectDevice(item.serial_no)
+        }>
         <Text style={styles.SelectText}>
           {selectedDevice === item.serial_no ? 'Selected' : 'Select'}
         </Text>
@@ -107,7 +121,7 @@ export const Product = ({navigation, route}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.SubmitBtn}
-              onPress={() => _navigationHandler('HomeScreen')}>
+              onPress={() => _AssignDeviceToUser()}>
               <Text style={styles.BtnText}>Submit</Text>
             </TouchableOpacity>
           </View>
