@@ -24,6 +24,16 @@ export const AddApplianceToRoom = ({route, navigation}) => {
   const [dimmerStatus, setDimmerStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deviceType, setDeviceType] = useState();
+  const [serial, setSerial] = useState();
+
+  useEffect(() => {
+    _setSerialNo();
+  }, []);
+
+  const _setSerialNo = async () => {
+    const deviceSerial = await AsyncStorage.getItem('device_serial');
+    setSerial(deviceSerial);
+  };
 
   const toggleSwitch = () => SetSwitchStatus(previousState => !previousState);
   const toggleDimmer = () => setDimmerStatus(previousState => !previousState);
@@ -50,7 +60,7 @@ export const AddApplianceToRoom = ({route, navigation}) => {
 
     const user_id = JSON.parse(user).results[0].user_id;
     const response = await fetch(
-      `http://${CONFIG.IP}:${CONFIG.PORT}/config/assignAppliance?user_id=${user_id}&appliance=${appliance_name}&switch_status=${switchStatus}&dimmer_status=${dimmerStatus}&relay=${relay}&room_name=${route.params.room}&device_type=${deviceType}`,
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/assignAppliance?user_id=${user_id}&appliance=${appliance_name}&switch_status=${switchStatus}&dimmer_status=${dimmerStatus}&relay=${relay}&room_name=${route.params.room}&device_type=${deviceType}&serial_no=${serial}`,
     );
     const result = await response.json();
     if (result.success === 1) {
