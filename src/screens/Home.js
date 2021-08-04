@@ -8,6 +8,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Home = ({navigation}) => {
+  const [userEmail, setUserEmail] = React.useState();
+  React.useEffect(() => {
+    setEmail();
+  });
+
   const MenuItems = [
     {
       id: 1,
@@ -61,6 +66,11 @@ export const Home = ({navigation}) => {
     },
   ];
 
+  const setEmail = async () => {
+    const userData = await AsyncStorage.getItem('user');
+    setUserEmail(JSON.parse(userData).results[0].email);
+  };
+
   const _renderMenu = ({item}) => {
     return (
       <TouchableOpacity
@@ -87,6 +97,7 @@ export const Home = ({navigation}) => {
     <View style={styles.MainContainer}>
       <View style={styles.HeaderContainer}>
         <Text style={styles.HeaderText}>Let's Start</Text>
+        <Text style={styles.HeaderDescription}>Logged in as: {userEmail}</Text>
       </View>
       <View style={styles.gridMenuContainer}>
         <FlatList
