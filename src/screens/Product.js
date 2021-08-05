@@ -59,6 +59,9 @@ export const Product = ({navigation, route}) => {
         <Text style={styles.ProductName}>{item.device}</Text>
         <View style={styles.ProductTypeContainer}>
           <Text style={styles.ProductTypeText}>{item.type}</Text>
+          <Text style={{color: COLORS.DarkGray, marginTop: 10}}>
+            {item.serial_no}
+          </Text>
         </View>
         <View style={styles.ConfigContainer}>
           <Text>Switches</Text>
@@ -148,9 +151,9 @@ const styles = StyleSheet.create({
   ProductContainer: {
     borderColor: COLORS.Primary,
     borderWidth: 2,
-    width: SIZES.Width * 0.4,
+    width: SIZES.Width * 0.45,
     height: SIZES.Height * 0.35,
-    margin: 10,
+    margin: 5,
   },
   SelectProductBtn: {
     backgroundColor: COLORS.Primary,
