@@ -9,6 +9,7 @@ import {
   Modal,
   Switch,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants/theme';
 import {Picker} from '@react-native-picker/picker';
@@ -16,7 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CONFIG} from '../constants/config.js';
 
 export const AddApplianceToRoom = ({route, navigation}) => {
-  const [rooms, setRooms] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [appliance_name, setApplianceName] = useState();
   const [relay, setRelay] = useState();
@@ -25,10 +25,39 @@ export const AddApplianceToRoom = ({route, navigation}) => {
   const [loading, setLoading] = useState(true);
   const [deviceType, setDeviceType] = useState();
   const [serial, setSerial] = useState();
+  const [appliances, setAppliances] = useState();
+  const [applianceStatus, setApplianceStatus] = useState();
 
   useEffect(() => {
     _setSerialNo();
+    setInterval(() => {
+      _getAppliancesAssignedToRoom();
+    }, 3000);
   }, []);
+
+  const _getAppliancesAssignedToRoom = async () => {
+    const user = await AsyncStorage.getItem('user');
+
+    const user_id = JSON.parse(user).results[0].user_id;
+
+    const response = await fetch(
+      `http://${CONFIG.IP}:${CONFIG.PORT}/config/getAppliancesAssignedToUser?room="${route.params.room}"&user=${user_id}`,
+    );
+
+    const result = await response.json();
+    if (result.message) {
+      setApplianceStatus(result.message);
+    } else if (result.results) {
+      setAppliances(result.results);
+    } else {
+      ToastAndroid.show(
+        'Unable to fetch the appliances, trying again.',
+        ToastAndroid.LONG,
+      );
+      _getAppliancesAssignedToRoom();
+    }
+    setLoading(false);
+  };
 
   const _setSerialNo = async () => {
     const deviceSerial = await AsyncStorage.getItem('device_serial');
@@ -41,15 +70,12 @@ export const AddApplianceToRoom = ({route, navigation}) => {
   const _renderDevices = ({item}) => {
     return (
       <View style={styles.DeviceContainer}>
-        <Text style={styles.DeviceName}>{item.name}</Text>
+        <Text style={styles.DeviceName}>{item.appliance}</Text>
         <Text style={styles.DeviceConfig}>Relay: {item.relay}</Text>
         <View>
-          <Text style={styles.DeviceConfig}>
-            Switch: {item.switch ? 'On' : 'Off'}
-          </Text>
-          <Text style={styles.DeviceConfig}>
-            Dimmer: {item.dimmer ? 'On' : 'Off'}
-          </Text>
+          <Text style={styles.DeviceConfig}>Serial: {item.serial_no}</Text>
+          <Text style={styles.DeviceConfig}>Switch: {item.switch}</Text>
+          <Text style={styles.DeviceConfig}>Dimmer: {item.dimmer}</Text>
         </View>
       </View>
     );
@@ -78,27 +104,23 @@ export const AddApplianceToRoom = ({route, navigation}) => {
     setLoading(false);
     setModalVisible(!modalVisible);
   };
-  const _navigationHandler = screen_name => {
-    navigation.navigate(screen_name);
-  };
 
   return (
     <View style={{flex: 1}}>
       <View style={styles.MainContainer}>
         <Text style={styles.HeaderText}>Room: {route.params.room}</Text>
-        {!rooms ? (
-          <Text
-            style={{
-              fontFamily: FONTS.Primary,
-              color: COLORS.DarkGray,
-              margin: 10,
-            }}>
-            No appliances detected
-          </Text>
+        {loading ? (
+          <View style={{margin: 10}}>
+            <ActivityIndicator color={COLORS.Primary} Size="small" />
+          </View>
+        ) : applianceStatus ? (
+          <View style={{margin: 10}}>
+            <Text style={{color: COLORS.DarkGray}}>{applianceStatus}</Text>
+          </View>
         ) : (
           <FlatList
             numColumns={2}
-            data={rooms}
+            data={appliances}
             keyExtractor={item => item.id}
             renderItem={_renderDevices}
             style={styles.AppliancesContainer}
@@ -263,9 +285,9 @@ const styles = StyleSheet.create({
   DeviceContainer: {
     backgroundColor: COLORS.Primary,
     borderRadius: 5,
-    width: SIZES.Width * 0.4,
-    height: SIZES.Height * 0.2,
-    margin: 10,
+    width: SIZES.Width * 0.47,
+    height: SIZES.Height * 0.3,
+    margin: 5,
     padding: 20,
   },
   DeviceName: {
